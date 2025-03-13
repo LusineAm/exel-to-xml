@@ -82,6 +82,8 @@ const convertHandler = async (req, res) => {
   </PayOrd>
   <PayBudg />
 </As_Import-Export_File>`;
+
+        // Create filename with current date
         const currentDate = getFormattedDate().replace(/\//g, '_');
         const filename = `PayOrder_${currentDate}.xml`;
 
@@ -97,7 +99,13 @@ const convertHandler = async (req, res) => {
 
 app.post('/convert', upload.single('file'), convertHandler);
 
-const PORT = Number(process.env.PORT) || 3001;
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-}); 
+// For local development
+if (process.env.NODE_ENV !== 'production') {
+    const PORT = Number(process.env.PORT) || 3001;
+    app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+    });
+}
+
+// For Vercel
+module.exports = app; 

@@ -149,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
         convertBtn.disabled = true;
 
         try {
-            const response = await fetch('/convert', {
+            const response = await fetch('/api/convert', {
                 method: 'POST',
                 body: formData
             });

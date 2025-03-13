@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel to XML Converter</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="converter-box">
+            <h1>Excel to XML Converter</h1>
+            
+            <div class="manual-inputs">
+                <h2>Manual Input Fields</h2>
+                <div class="input-group">
+                    <label for="details">DETAILS:</label>
+                    <input type="text" id="details" name="details" required>
+                </div>
+                <div class="input-group">
+                    <label for="taxCode">TAX CODE:</label>
+                    <input type="text" id="taxCode" name="taxCode" required>
+                </div>
+                <div class="input-group">
+                    <label for="payerAcc">PAYER ACCOUNT:</label>
+                    <input type="text" id="payerAcc" name="payerAcc" required>
+                </div>
+            </div>
+
+            <div class="excel-upload">
+                <h2>Excel Upload</h2>
+                <p class="info-text">Expected columns are Employee ID, Amount, Account number, Bank name, Beneficiary Name</p>
+                <div class="upload-area" id="dropZone">
+                    <img src="https://cdn-icons-png.flaticon.com/512/3767/3767084.png" alt="file" class="upload-icon">
+                    <p>Drag and drop your Excel file here</p>
+                    <p>or</p>
+                    <label for="fileInput" class="upload-button">Choose File</label>
+                    <input type="file" id="fileInput" accept=".xlsx,.xls" hidden>
+                </div>
+            </div>
+
+            <div id="fileInfo" class="file-info" style="display: none;">
+                <div class="file-info-content">
+                    <p>Selected file: <span id="fileName"></span></p>
+                    <button id="removeFile" class="remove-button" title="Remove file">×</button>
+                </div>
+                <button id="convertBtn" class="convert-button">Convert to XML</button>
+            </div>
+            <div id="loading" class="loading" style="display: none;">
+                Converting... Please wait
+            </div>
+        </div>
+    </div>
+    <script src="script.js" type="module"></script>
+</body>
+</html> 

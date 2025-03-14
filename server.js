@@ -97,7 +97,7 @@ const convertHandler = async (req, res) => {
     }
 };
 
-app.post('/convert', upload.single('file'), convertHandler);
+app.post('/api/convert', upload.single('file'), convertHandler);
 
 // For local development
 if (process.env.NODE_ENV !== 'production') {

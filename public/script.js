@@ -149,7 +149,9 @@ document.addEventListener('DOMContentLoaded', () => {
         convertBtn.disabled = true;
 
         try {
-            const response = await fetch('/api/convert', {
+            // Get the base URL dynamically
+            const baseUrl = window.location.origin;
+            const response = await fetch(`${baseUrl}/api/convert`, {
                 method: 'POST',
                 body: formData
             });

@@ -17,7 +17,7 @@ A web application that converts Excel files (XLSX/XLS) to XML format with a spec
 
 ## Installation
 
-1. Clone this repository or download the files
+1. Clone this repository
 2. Navigate to the project directory
 3. Install dependencies:
 ```bash
@@ -45,12 +45,6 @@ The application expects Excel files with a structure similar to the following:
 - Headers in the first row
 - Data in subsequent rows
 - The XML output will maintain the structure with appropriate data types (String/Number)
-
-## Error Handling
-
-- The application validates file types before upload
-- Server-side error handling for conversion process
-- User-friendly error messages
 
 ## Technologies Used
 

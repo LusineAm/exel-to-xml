@@ -10,7 +10,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const loading = document.getElementById('loading');
     const uploadButton = document.querySelector('.upload-button');
     
-    // Get input elements
     const detailsInput = document.getElementById('details');
     const taxCodeInput = document.getElementById('taxCode');
     const payerAccInput = document.getElementById('payerAcc');
@@ -54,7 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Drag and drop handlers
     dropZone.addEventListener('dragover', (e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -149,7 +147,6 @@ document.addEventListener('DOMContentLoaded', () => {
         convertBtn.disabled = true;
 
         try {
-            // Get the base URL dynamically
             const baseUrl = window.location.origin;
             const response = await fetch(`${baseUrl}/api/convert`, {
                 method: 'POST',
@@ -165,7 +162,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const a = document.createElement('a');
             a.href = url;
             
-            // Create filename with current date
             const currentDate = getFormattedDate().replace(/\//g, '_');
             a.download = `PayOrder_${currentDate}.xml`;
             

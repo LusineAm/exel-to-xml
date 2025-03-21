@@ -16,6 +16,35 @@ document.addEventListener('DOMContentLoaded', () => {
     
     let currentFile = null;
 
+    // Load saved values from localStorage
+    function loadSavedValues() {
+        const savedDetails = localStorage.getItem('details');
+        const savedTaxCode = localStorage.getItem('taxCode');
+        const savedPayerAcc = localStorage.getItem('payerAcc');
+
+        if (savedDetails) detailsInput.value = savedDetails;
+        if (savedTaxCode) taxCodeInput.value = savedTaxCode;
+        if (savedPayerAcc) payerAccInput.value = savedPayerAcc;
+    }
+
+    // Save values to localStorage
+    function saveValues() {
+        localStorage.setItem('details', detailsInput.value);
+        localStorage.setItem('taxCode', taxCodeInput.value);
+        localStorage.setItem('payerAcc', payerAccInput.value);
+    }
+
+    // Load saved values when page loads
+    loadSavedValues();
+
+    // Save values when they change
+    [detailsInput, taxCodeInput, payerAccInput].forEach(input => {
+        input.addEventListener('input', () => {
+            saveValues();
+            validateInputs();
+        });
+    });
+
     function validateInputs() {
         const details = detailsInput.value.trim();
         const taxCode = taxCodeInput.value.trim();
@@ -46,12 +75,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         return isValid;
     }
-
-    [detailsInput, taxCodeInput, payerAccInput].forEach(input => {
-        input.addEventListener('input', () => {
-            validateInputs();
-        });
-    });
 
     dropZone.addEventListener('dragover', (e) => {
         e.preventDefault();
@@ -142,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
         formData.append('details', details);
         formData.append('taxCode', taxCode);
         formData.append('payerAcc', payerAcc);
-
+        
         loading.style.display = 'block';
         convertBtn.disabled = true;
 
@@ -154,7 +177,8 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (!response.ok) {
-                throw new Error('Conversion failed');
+                const errorData = await response.json();
+                throw new Error(errorData.details || 'Conversion failed');
             }
 
             const blob = await response.blob();
@@ -171,7 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.removeChild(a);
         } catch (error) {
             console.error('Error:', error);
-            alert('Error converting file. Please try again.');
+            alert(`Error converting file: ${error.message}`);
         } finally {
             loading.style.display = 'none';
             convertBtn.disabled = false;

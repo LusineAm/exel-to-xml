@@ -11,6 +11,7 @@ const upload = multer({
         fileSize: 5 * 1024 * 1024
     }
 });
+const docNum = String(Math.floor(Math.random() * 1000) + 1).padStart(4, '0');
 
 app.use((err, req, res, next) => {
     console.error('Global error handler:', err);
@@ -37,7 +38,8 @@ const convertHandler = async (req, res) => {
             docDate: getFormattedDate(),
             taxCode: req.body.taxCode === 'null' ? '' : (req.body.taxCode || ''),
             details: req.body.details === 'null' ? '' : (req.body.details || ''),
-            payerAcc: req.body.payerAcc === 'null' ? '' : (req.body.payerAcc || '')
+            payerAcc: req.body.payerAcc === 'null' ? '' : (req.body.payerAcc || ''),
+            docNum: docNum || '0001'
         };
         
         const jsonData = XLSX.utils.sheet_to_json(worksheet, { 
@@ -47,13 +49,15 @@ const convertHandler = async (req, res) => {
         });
 
         const headerRow = jsonData[0];
+        
         if (!headerRow || 
-            headerRow[0] !== "Employee ID" || 
-            headerRow[1] !== "Amount" || 
-            headerRow[2] !== "Account number" || 
-            headerRow[3] !== "Bank name" || 
-            headerRow[4] !== "Beneficiary Name") {
-            throw new Error("Invalid Excel format: Expected columns are 'Employee ID', 'Amount', 'Account number', 'Bank name', 'Beneficiary Name'");
+            headerRow[0] !== "Account number" || 
+            headerRow[1] !== "Bank name" || 
+            headerRow[2] !== "Beneficiary Name" || 
+            headerRow[3] !== "Meal allowance"
+        ) {
+            console.log('Header validation failed. Expected:', ['Account number', 'Bank name', 'Beneficiary Name', 'Amount']);
+            throw new Error("Invalid Excel format. Please ensure your Excel file has the following columns in order: Account number, Bank name, Beneficiary Name, Amount");
         }
         
         let xmlContent = `<?xml version="1.0" encoding="utf-16" standalone="yes"?>
@@ -67,10 +71,10 @@ const convertHandler = async (req, res) => {
                     row.push('');
                 }
 
-                const docNum = row[0] ? row[0].toString().trim() : '';
-                const amount = row[1] ? parseFloat(row[1].toString()).toFixed(1) : '0';
-                const benAcc = row[2] ? row[2].toString().trim() : '';
-                const beneficiary = row[4] ? row[4].toString().trim() : '';
+                const amount = row[3] ? parseFloat(row[3].toString()).toFixed(1) : '0';
+                const benAcc = row[0] ? row[0].toString().trim() : '';
+                const beneficiary = row[2] ? row[2].toString().trim() : '';
+                const uniqueDocNum = String(i).padStart(4, '0');
 
                 if (isNaN(parseFloat(amount))) {
                     console.error(`Error: Invalid amount format in row ${i}`);
@@ -78,7 +82,7 @@ const convertHandler = async (req, res) => {
                 }
 
                 xmlContent += `
-    <PayOrd DOCNUM="${docNum}" DOCDATE="${manualInputs.docDate}" PAYERACC="${manualInputs.payerAcc}" TAXCODE="${manualInputs.taxCode}" SOCIALCARD="" BENACC="${benAcc}" BENEFICIARY="${beneficiary}" AMOUNT="${amount}" CURRENCY="AMD" DETAILS="${manualInputs.details}"/>`;
+    <PayOrd DOCNUM="${uniqueDocNum}" DOCDATE="${manualInputs.docDate}" PAYERACC="${manualInputs.payerAcc}" TAXCODE="${manualInputs.taxCode}" SOCIALCARD="" BENACC="${benAcc}" BENEFICIARY="${beneficiary}" AMOUNT="${amount}" CURRENCY="AMD" DETAILS="${manualInputs.details}"/>`;
             }
         }
 
@@ -96,7 +100,11 @@ const convertHandler = async (req, res) => {
 
     } catch (error) {
         console.error('Error:', error);
-        res.status(500).send('Error converting file');
+        res.status(500).json({ 
+            error: 'Error converting file',
+            details: error.message,
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        });
     }
 };
 

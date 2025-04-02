@@ -6,7 +6,6 @@ A web application that converts Excel files (XLSX/XLS) to XML format with a spec
 
 - Drag and drop file upload
 - Support for XLSX and XLS files
-- Modern and responsive UI
 - Real-time conversion
 - Automatic file download after conversion
 
@@ -38,17 +37,3 @@ node server.js
 4. Click the "Convert to XML" button to start the conversion
 
 5. The converted XML file will automatically download when ready
-
-## Supported Excel Structure
-
-The application expects Excel files with a structure similar to the following:
-- Headers in the first row
-- Data in subsequent rows
-- The XML output will maintain the structure with appropriate data types (String/Number)
-
-## Technologies Used
-
-- Frontend: HTML5, CSS3, JavaScript
-- Backend: Node.js, Express
-- File Processing: xlsx library
-- File Upload: multer 

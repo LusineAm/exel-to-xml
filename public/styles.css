@@ -167,7 +167,7 @@ h2 {
 }
 
 .remove-button {
-    background-color: #e53e3e;
+    background-color: #ccc;
     color: white;
     border: none;
     border-radius: 50%;
@@ -183,7 +183,7 @@ h2 {
 }
 
 .remove-button:hover {
-    background-color: #c53030;
+    background-color: #373636;
 }
 
 .convert-button {

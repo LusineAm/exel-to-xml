@@ -1,6 +1,6 @@
 const express = require('express');
 const multer = require('multer');
-const XLSX = require('xlsx');
+const ExcelJS = require('exceljs');
 const cors = require('cors');
 const { getFormattedDate } = require('./dateUtils');
 
@@ -31,8 +31,9 @@ const convertHandler = async (req, res) => {
             return;
         }
 
-        const workbook = XLSX.read(req.file.buffer, { type: 'buffer' });
-        const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+        const workbook = new ExcelJS.Workbook();
+        await workbook.xlsx.load(req.file.buffer);
+        const worksheet = workbook.getWorksheet(1);
         
         const manualInputs = {
             docDate: getFormattedDate(),
@@ -42,11 +43,13 @@ const convertHandler = async (req, res) => {
             docNum: docNum || '0001'
         };
         
-        const jsonData = XLSX.utils.sheet_to_json(worksheet, { 
-            header: 1,
-            defval: '',
-            blankrows: true
+        const jsonData = [];
+        worksheet.eachRow({ includeEmpty: true }, (row, rowNumber) => {
+            jsonData.push(row.values);
         });
+
+        // Remove the first element which is undefined due to ExcelJS row.values starting from index 1
+        jsonData.forEach(row => row.shift());
 
         const headerRow = jsonData[0];
         
